@@ -17,7 +17,7 @@ export default async function ProfilePage({ searchParams }: PageProps<"/profile"
         sub={
           user.phone
             ? `Signed in as ${user.email}`
-            : "Add your phone number so your driver or passengers can reach you. It's only shared with people in your car."
+            : "Confirm your full name and add your phone number so your driver or passengers can reach you. It's only shared with people in your car."
         }
       >
         {user.phone ? "Your profile" : "One quick thing"}

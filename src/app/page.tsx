@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { and, desc, eq, gte, ne } from "drizzle-orm";
 import { db, drivers, rideRequests, users } from "@/lib/db";
 import { todayPacific } from "@/lib/campuses";
@@ -10,6 +11,8 @@ import { Icon } from "@/components/icon";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const user = await getCurrentUser();
+  // New sign-ins land here: finish the profile (full name + phone) before anything else.
+  if (user && !user.phone) redirect("/profile");
 
   return (
     <div className="space-y-8">

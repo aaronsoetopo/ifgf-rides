@@ -59,16 +59,25 @@ export async function signOutAction() {
 // ---------- Profile ----------
 
 const profileSchema = z.object({
-  name: z.string().trim().min(2, "Please enter your name.").max(80),
+  name: z
+    .string()
+    .trim()
+    .max(80)
+    .transform((s) => s.replace(/\s+/g, " "))
+    .refine((s) => s.split(" ").length >= 2 && s.length >= 3, "Please enter your full name (first and last)."),
   phone: z.string().trim().min(7, "Please enter your phone number."),
 });
 
-export async function saveProfile(_prev: FormState, formData: FormData): Promise<FormState> {
+export type ProfileFormState = { error: string; values: { name: string; phone: string } } | undefined;
+
+export async function saveProfile(_prev: ProfileFormState, formData: FormData): Promise<ProfileFormState> {
   const user = await requireUser("/profile");
-  const parsed = profileSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  // Sent back with errors so the form can show what was typed (React resets forms after an action).
+  const values = { name: String(formData.get("name") ?? ""), phone: String(formData.get("phone") ?? "") };
+  const parsed = profileSchema.safeParse(values);
+  if (!parsed.success) return { error: parsed.error.issues[0].message, values };
   const phone = normalizePhone(parsed.data.phone);
-  if (!phone) return { error: "That phone number doesn't look right. Use a 10-digit US number." };
+  if (!phone) return { error: "That phone number doesn't look right. Use a 10-digit US number.", values };
 
   await db.update(users).set({ name: parsed.data.name, phone }).where(eq(users.id, user.id));
   redirect(withMessage(safeNext(formData.get("next")), "notice", "Profile saved."));

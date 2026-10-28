@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { desc, eq } from "drizzle-orm";
 import { db, notifications } from "@/lib/db";
-import { requireUser } from "@/lib/session";
+import { requireProfile } from "@/lib/session";
 import { markNotificationsRead } from "@/app/actions";
 import { EmptyState, PageTitle } from "@/components/ui";
 import { SubmitButton } from "@/components/submit-button";
@@ -17,7 +17,7 @@ const timeFormat = new Intl.DateTimeFormat("en-US", {
 });
 
 export default async function InboxPage() {
-  const user = await requireUser("/inbox");
+  const user = await requireProfile("/inbox");
   const items = await db
     .select()
     .from(notifications)
