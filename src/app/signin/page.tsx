@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { devLoginEnabled, googleEnabled } from "@/auth";
 import { devSignIn, signInWithGoogle } from "@/app/actions";
@@ -51,6 +52,14 @@ export default async function SignInPage({ searchParams }: PageProps<"/signin">)
           </SubmitButton>
         </form>
       )}
+
+      <p className="mt-6 text-center text-xs text-black/50">
+        By signing in you agree to how we use your information in our{" "}
+        <Link href="/privacy" className="underline underline-offset-2">
+          privacy policy
+        </Link>
+        .
+      </p>
 
       {!googleEnabled && !devLoginEnabled && (
         <p className="text-sm text-red-700">Sign-in isn&apos;t configured yet. Set AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET.</p>

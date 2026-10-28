@@ -19,6 +19,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         <h2 className="section-title">Sunday Services</h2>
         <CampusCards />
       </section>
+      <p className="text-center text-xs text-black/50">
+        <Link href="/privacy" className="underline underline-offset-2">
+          Privacy policy
+        </Link>
+      </p>
     </div>
   );
 }
