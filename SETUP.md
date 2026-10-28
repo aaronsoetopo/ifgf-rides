@@ -42,7 +42,11 @@ does that automatically.
 
 ---
 
-## Part 3 — Gmail for sending emails (5 min)
+## Part 3 — Gmail for sending emails (5 min, optional: can be added later)
+
+Skipping this is fine: leave the `SMTP_*` variables out. The app still works and everyone still gets
+notifications in the app's **Inbox** tab; only the email copies are skipped (they're written to
+Vercel's logs instead). Add the variables in Vercel and redeploy whenever you have the account.
 
 1. Create a Gmail account for the app, e.g. `ifgfrides@gmail.com` (or use a church account).
 2. Signed in as that account, turn on **2-Step Verification**: <https://myaccount.google.com/signinoptions/twosv>
