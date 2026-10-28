@@ -28,7 +28,9 @@ site needs a database on the internet; Turso's free plan is more than enough.
 1. Go to <https://turso.tech> → **Sign up** → **Continue with GitHub**.
 2. Click **Create Database**.
    - Name: `ifgf-rides`
-   - Location / group: the one closest to California (e.g. *AWS US West (Oregon)* or *US West*).
+   - Location: **AWS US West (Oregon)** (`aws-us-west-2`). The app's Vercel servers are pinned to
+     Portland (`pdx1` in `vercel.json`), so the database sits right next to them.
+   - Leave the TursoDB / concurrent-writes toggle **off**.
 3. Open the database. Copy the **URL**, which looks like `libsql://ifgf-rides-aaronsoetopo.aws-us-west-2.turso.io`.
    → this is `DATABASE_URL`
 4. Click **Create Token** (or *Generate token*), choose **Read & Write**, no expiration. Copy it.
