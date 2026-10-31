@@ -12,7 +12,7 @@ export function ProfileForm({ name, phone, next }: { name: string; phone: string
       <input type="hidden" name="next" value={next} />
       <div>
         <label className="label" htmlFor="name">
-          Full name
+          Name
         </label>
         <input
           id="name"

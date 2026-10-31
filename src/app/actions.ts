@@ -64,7 +64,7 @@ const profileSchema = z.object({
     .trim()
     .max(80)
     .transform((s) => s.replace(/\s+/g, " "))
-    .refine((s) => s.split(" ").length >= 2 && s.length >= 3, "Please enter your full name (first and last)."),
+    .refine((s) => s.length >= 2, "Please enter your name."),
   phone: z.string().trim().min(7, "Please enter your phone number."),
 });
 
