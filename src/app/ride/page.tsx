@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { db, rideRequests } from "@/lib/db";
-import { CAMPUSES, formatServiceDate, upcomingSundays } from "@/lib/campuses";
+import { CAMPUSES, bookableSundays } from "@/lib/campuses";
 import { requireProfile } from "@/lib/session";
 import { Flash, PageTitle } from "@/components/ui";
 import { RideRequestForm } from "./request-form";
@@ -23,7 +23,7 @@ export default async function RidePage({ searchParams }: PageProps<"/ride">) {
       </PageTitle>
       <RideRequestForm
         campuses={CAMPUSES}
-        sundays={upcomingSundays(4).map((d) => ({ value: d, label: formatServiceDate(d, { long: true }) }))}
+        sundaysByCampus={Object.fromEntries(CAMPUSES.map((c) => [c.id, bookableSundays(c.id)]))}
         last={last ? { campus: last.campus, address: last.address, lat: last.lat, lng: last.lng } : null}
       />
     </div>

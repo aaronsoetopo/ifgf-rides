@@ -6,7 +6,7 @@ import { refresh } from "next/cache";
 import { z } from "zod";
 import { signIn, signOut } from "@/auth";
 import { db, drivers, notifications, rideRequests, users } from "@/lib/db";
-import { CAMPUS_IDS, isSunday, todayPacific } from "@/lib/campuses";
+import { CAMPUS_IDS, getCampus, isSunday, serviceStarted, todayPacific } from "@/lib/campuses";
 import { normalizePhone } from "@/lib/phone";
 import { requireAdmin, requireProfile, requireUser } from "@/lib/session";
 import {
@@ -150,7 +150,11 @@ export async function createRideRequest(_prev: FormState, formData: FormData): P
   const user = await requireProfile("/ride");
   const parsed = requestSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
-  if (parsed.data.serviceDate < todayPacific()) return { error: "That Sunday has already passed." };
+  const { campus, serviceDate } = parsed.data;
+  if (serviceDate < todayPacific()) return { error: "That Sunday has already passed." };
+  if (serviceStarted(campus, serviceDate)) {
+    return { error: `Today's ${getCampus(campus).time} service has already started. Please pick next Sunday.` };
+  }
 
   const existing = await db.query.rideRequests.findFirst({
     where: and(

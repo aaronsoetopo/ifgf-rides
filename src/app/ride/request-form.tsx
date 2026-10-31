@@ -1,13 +1,21 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { createRideRequest } from "@/app/actions";
 import type { Campus } from "@/lib/campuses";
 import type { PickedPlace } from "@/lib/places";
 import { PlacePicker } from "@/components/place-picker";
 import { FormError, SubmitButton } from "@/components/submit-button";
 
-export function CampusChooser({ campuses, defaultValue }: { campuses: Campus[]; defaultValue?: string }) {
+export function CampusChooser({
+  campuses,
+  defaultValue,
+  onChange,
+}: {
+  campuses: Campus[];
+  defaultValue?: string;
+  onChange?: (campusId: string) => void;
+}) {
   return (
     <div className="grid gap-2 sm:grid-cols-3">
       {campuses.map((c) => (
@@ -20,6 +28,7 @@ export function CampusChooser({ campuses, defaultValue }: { campuses: Campus[]; 
             name="campus"
             value={c.id}
             defaultChecked={c.id === defaultValue}
+            onChange={() => onChange?.(c.id)}
             required
             className="sr-only"
           />
@@ -35,20 +44,25 @@ export function CampusChooser({ campuses, defaultValue }: { campuses: Campus[]; 
 
 export function RideRequestForm({
   campuses,
-  sundays,
+  sundaysByCampus,
   last,
 }: {
   campuses: Campus[];
-  sundays: { value: string; label: string }[];
+  /** Per campus, since on Sunday today's date drops off once that campus's service starts. */
+  sundaysByCampus: Record<string, { value: string; label: string }[]>;
   last: (PickedPlace & { campus: string }) | null;
 }) {
   const [state, action] = useActionState(createRideRequest, undefined);
+  // Until a campus is picked, show the latest service's list (it keeps today the longest).
+  const latest = campuses.reduce((a, b) => (b.startMinutes > a.startMinutes ? b : a));
+  const [campus, setCampus] = useState(last?.campus ?? latest.id);
+  const sundays = sundaysByCampus[campus] ?? [];
 
   return (
     <form action={action} className="space-y-6">
       <fieldset>
         <legend className="label">Which campus?</legend>
-        <CampusChooser campuses={campuses} defaultValue={last?.campus} />
+        <CampusChooser campuses={campuses} defaultValue={last?.campus} onChange={setCampus} />
       </fieldset>
 
       <div>
@@ -56,10 +70,9 @@ export function RideRequestForm({
           Which Sunday?
         </label>
         <select id="serviceDate" name="serviceDate" className="input" defaultValue={sundays[0]?.value}>
-          {sundays.map((s, i) => (
+          {sundays.map((s) => (
             <option key={s.value} value={s.value}>
               {s.label}
-              {i === 0 ? " (this Sunday)" : ""}
             </option>
           ))}
         </select>
