@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { z } from "zod";
 import { signIn, signOut } from "@/auth";
-import { db, drivers, notifications, rideRequests, users } from "@/lib/db";
+import { db, drivers, notifications, pushSubscriptions, rideRequests, users } from "@/lib/db";
 import { CAMPUS_IDS, getCampus, isSunday, serviceStarted, todayPacific } from "@/lib/campuses";
 import { normalizePhone } from "@/lib/phone";
 import { requireAdmin, requireProfile, requireUser } from "@/lib/session";
@@ -190,6 +190,33 @@ export async function markNotificationsRead() {
     .set({ readAt: new Date() })
     .where(and(eq(notifications.userId, user.id), isNull(notifications.readAt)));
   refresh();
+}
+
+// ---------- Push notifications ----------
+
+const pushSubscriptionSchema = z.object({
+  endpoint: z.url().startsWith("https://"),
+  keys: z.object({ p256dh: z.string().min(1), auth: z.string().min(1) }),
+});
+
+/** Links this device's push subscription to the signed-in user (re-linking it if someone else used it). */
+export async function savePushSubscription(subscription: unknown) {
+  const user = await requireUser("/");
+  const parsed = pushSubscriptionSchema.safeParse(subscription);
+  if (!parsed.success) return { ok: false };
+  const { endpoint, keys } = parsed.data;
+  await db
+    .insert(pushSubscriptions)
+    .values({ endpoint, userId: user.id, ...keys })
+    .onConflictDoUpdate({ target: pushSubscriptions.endpoint, set: { userId: user.id, ...keys } });
+  return { ok: true };
+}
+
+export async function deletePushSubscription(endpoint: string) {
+  const user = await requireUser("/");
+  await db
+    .delete(pushSubscriptions)
+    .where(and(eq(pushSubscriptions.endpoint, endpoint), eq(pushSubscriptions.userId, user.id)));
 }
 
 // ---------- Coordinators ----------

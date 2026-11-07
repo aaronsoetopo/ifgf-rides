@@ -13,6 +13,8 @@ const paths = {
   location: "M12 2v3M12 19v3M2 12h3M19 12h3M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z",
   copy: "M8 8h12v12H8zM4 16V4h12",
   check: "m5 12 5 5L20 7",
+  bell: "M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15zM10 20a2 2 0 0 0 4 0",
+  share: "M12 3v12M8 7l4-4 4 4M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7",
 } as const;
 
 export type IconName = keyof typeof paths;

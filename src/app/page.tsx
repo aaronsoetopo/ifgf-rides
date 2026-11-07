@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/lib/session";
 import { pendingInvitesFor, tripHref, upcomingTripsFor } from "@/lib/matching";
 import { CampusCards, CampusLine, Flash, StatusBadge } from "@/components/ui";
 import { Icon } from "@/components/icon";
+import { PushToggle } from "@/components/push-toggle";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const user = await getCurrentUser();
@@ -107,6 +108,7 @@ async function Dashboard({ userId, name }: { userId: string; name: string }) {
   return (
     <>
       <h1 className="text-2xl font-semibold tracking-tight">Hi {firstName(name)} 👋</h1>
+      <PushToggle variant="banner" />
 
       {invites.length > 0 && (
         <Link href="/drive" className="flex items-center gap-3 rounded-xl bg-accent px-4 py-3 text-white">

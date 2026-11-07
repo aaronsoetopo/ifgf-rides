@@ -146,6 +146,20 @@ Google Cloud is Google's control panel for its developer services. You need one 
 
 ---
 
+## Part 5½ — Phone notifications (5 min)
+
+The keys are already in your `.env.local` (lines starting with `NEXT_PUBLIC_VAPID_PUBLIC_KEY` and
+`VAPID_PRIVATE_KEY`). Copy both into **Vercel → Settings → Environment Variables**:
+
+| Name | Type | Value |
+|---|---|---|
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | Config | copy from `.env.local` |
+| `VAPID_PRIVATE_KEY` | **Secret** | copy from `.env.local` |
+
+Then redeploy. Each person turns notifications on once per phone: tap **Turn on notifications** on the
+home page or in the Inbox. On iPhone they must first **Share → Add to Home Screen** and open the app
+from the Home Screen icon (Apple only allows web notifications for installed apps).
+
 ## Part 6 — Check it works on your phone
 1. Open your Vercel address on your phone → **Continue with Google** → add your phone number.
 2. *Drive* → set up as a driver (try typing your street in the search box).

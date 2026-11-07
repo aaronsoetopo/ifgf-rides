@@ -5,6 +5,7 @@ import { requireProfile } from "@/lib/session";
 import { markNotificationsRead } from "@/app/actions";
 import { EmptyState, PageTitle } from "@/components/ui";
 import { SubmitButton } from "@/components/submit-button";
+import { PushToggle } from "@/components/push-toggle";
 
 export const metadata = { title: "Inbox" };
 
@@ -29,7 +30,7 @@ export default async function InboxPage() {
   return (
     <div>
       <div className="flex items-start justify-between gap-3">
-        <PageTitle sub="Updates about your rides. We also email you each of these.">Inbox</PageTitle>
+        <PageTitle sub="Updates about your rides. We also send these to your phone and email.">Inbox</PageTitle>
         {unread > 0 && (
           <form action={markNotificationsRead}>
             <SubmitButton className="btn-ghost py-1.5 text-xs" pendingText="…">
@@ -37,6 +38,9 @@ export default async function InboxPage() {
             </SubmitButton>
           </form>
         )}
+      </div>
+      <div className="mb-4">
+        <PushToggle variant="full" />
       </div>
       {items.length ? (
         <ul className="space-y-2">

@@ -109,6 +109,21 @@ export const notifications = sqliteTable(
   (t) => [index("notifications_user_idx").on(t.userId, t.readAt)],
 );
 
+/** A browser/phone that agreed to receive push notifications. One user can have several devices. */
+export const pushSubscriptions = sqliteTable(
+  "push_subscriptions",
+  {
+    endpoint: text("endpoint").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    p256dh: text("p256dh").notNull(),
+    auth: text("auth").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("push_subscriptions_user_idx").on(t.userId)],
+);
+
 /** One row per scheduled broadcast already sent (e.g. "weekly:2026-11-08"), so a retry never sends twice. */
 export const sentReminders = sqliteTable("sent_reminders", {
   key: text("key").primaryKey(),

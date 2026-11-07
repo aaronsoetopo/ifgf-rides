@@ -4,6 +4,7 @@ import { inArray } from "drizzle-orm";
 import { db, notifications, users } from "@/lib/db";
 import { adminEmails } from "@/lib/session";
 import { appUrl, sendEmail } from "@/lib/email";
+import { sendPush } from "@/lib/push";
 
 type Message = {
   title: string;
@@ -13,12 +14,16 @@ type Message = {
   email?: string;
 };
 
-/** Saves an in-app notification for each user and emails them after the response is sent. */
+/**
+ * Saves an in-app notification for each user, then (after the response is sent) pushes it to their
+ * phones and emails them.
+ */
 export async function notify(userIds: string[], msg: Message) {
   if (!userIds.length) return;
   await db
     .insert(notifications)
     .values(userIds.map((userId) => ({ userId, title: msg.title, body: msg.body, href: msg.href })));
+  after(() => sendPush(userIds, { title: msg.title, body: msg.body, href: msg.href }));
 
   if (!msg.email) return;
   const recipients = await db
