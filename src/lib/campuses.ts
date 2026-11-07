@@ -70,6 +70,20 @@ function minutesNowPacific(now = new Date()): number {
   return get("hour") * 60 + get("minute");
 }
 
+/** Day of week ("Fri") and hour (0–23) in Pacific time. */
+export function pacificDayAndHour(now = new Date()): { weekday: string; hour: number } {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TIME_ZONE,
+    weekday: "short",
+    hour: "numeric",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  return {
+    weekday: parts.find((p) => p.type === "weekday")?.value ?? "",
+    hour: Number(parts.find((p) => p.type === "hour")?.value ?? -1),
+  };
+}
+
 /** True once a campus's service on `date` has started (or the date has passed). */
 export function serviceStarted(campusId: string, date: string, now = new Date()): boolean {
   const today = todayPacific(now);

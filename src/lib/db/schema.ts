@@ -109,6 +109,12 @@ export const notifications = sqliteTable(
   (t) => [index("notifications_user_idx").on(t.userId, t.readAt)],
 );
 
+/** One row per scheduled broadcast already sent (e.g. "weekly:2026-11-08"), so a retry never sends twice. */
+export const sentReminders = sqliteTable("sent_reminders", {
+  key: text("key").primaryKey(),
+  sentAt: createdAt(),
+});
+
 export type User = typeof users.$inferSelect;
 export type Driver = typeof drivers.$inferSelect;
 export type RideRequest = typeof rideRequests.$inferSelect;

@@ -1,4 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "regions": ["pdx1"]
+  "regions": ["pdx1"],
+  "crons": [
+    { "path": "/api/cron/weekly-reminder?utc=21", "schedule": "0 21 * * 5" },
+    { "path": "/api/cron/weekly-reminder?utc=22", "schedule": "0 22 * * 5" }
+  ]
 }
